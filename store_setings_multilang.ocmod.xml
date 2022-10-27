@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <name>Multilanguage for store settings</name>
+    <code>store_settings_multilang</code>
+    <version>1.0</version>
+    <author>Babaiev Ihor</author>
+
+    <file path="admin/controller/setting/setting.php">
+        <operation>
+            <search>
+                <![CDATA[$data['header'] = $this->load->controller('common/header');]]>
+            </search>
+            <add position="after">
+                <![CDATA[
+            $this->load->model('localisation/language');
+		    $data['languages'] = $this->model_localisation_language->getLanguages();
+            ]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="admin/controller/setting/setting.php">
+        <operation>
+            <search>
+                <![CDATA[if ((utf8_strlen($this->request->post['config_owner']) < 3) || (utf8_strlen($this->request->post['config_owner']) > 64)) {]]>
+            </search>
+            <add position="replace" offset="3">
+                <![CDATA[
+        foreach ($this->request->post['config_owner'] as $item) {
+            if ((utf8_strlen($item) < 3) || (utf8_strlen($item) > 64)) {
+                $this->error['owner'] = $this->language->get('error_owner');
+            }
+        }
+                ]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="admin/controller/setting/setting.php">
+        <operation>
+            <search>
+                <![CDATA[if ((utf8_strlen($this->request->post['config_address']) < 3) || (utf8_strlen($this->request->post['config_address']) > 256)) {]]>
+            </search>
+            <add position="replace" offset="3">
+                <![CDATA[
+        foreach ($this->request->post['config_address'] as $item) {
+            if ((utf8_strlen($item) < 3) || (utf8_strlen($item) > 256)) {
+                $this->error['owner'] = $this->language->get('error_owner');
+            }
+        }
+                ]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="admin/view/template/setting/setting.twig">
+        <operation>
+            <search>
+                <![CDATA[<input type="text" name="config_owner" value="{{ config_owner }}" placeholder="{{ entry_owner }}" id="input-owner" class="form-control" />]]>
+            </search>
+            <add position="replace">
+                <![CDATA[
+                    {% for language in languages %}
+                        <div class="input-group"><span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}"/></span><input type="text" name="config_owner[{{ language.language_id }}]" value="{{ config_owner[language.language_id] }}" placeholder="{{ entry_owner }}" id="input-owner" class="form-control" /></div>
+                    {% endfor %}
+                ]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="admin/view/template/setting/setting.twig">
+        <operation>
+            <search>
+                <![CDATA[<textarea name="config_address" placeholder="{{ entry_address }}" rows="5" id="input-address" class="form-control">{{ config_address }}</textarea>]]>
+            </search>
+            <add position="replace">
+                <![CDATA[
+                    {% for language in languages %}
+                        <div class="input-group"><span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}"/></span><textarea name="config_address[{{ language.language_id }}]" placeholder="{{ entry_address }}" rows="5" id="input-address" class="form-control">{{ config_address[language.language_id] }}</textarea></div>
+                    {% endfor %}
+                ]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="admin/view/template/setting/setting.twig">
+        <operation>
+            <search>
+                <![CDATA[<textarea name="config_open" rows="5" placeholder="{{ entry_open }}" id="input-open" class="form-control">{{ config_open }}</textarea>]]>
+            </search>
+            <add position="replace">
+                <![CDATA[
+                    {% for language in languages %}
+                        <div class="input-group"><span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}"/></span><textarea name="config_open[{{ language.language_id }}]" rows="5" placeholder="{{ entry_open }}" id="input-open" class="form-control">{{ config_open[language.language_id] }}</textarea></div>
+                    {% endfor %}
+                ]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="catalog/controller/common/footer.php">
+        <operation>
+            <search>
+                <![CDATA[$this->config->get('config_address')]]>
+            </search>
+            <add position="replace">
+                <![CDATA[$this->config->get('config_address')[$this->config->get('config_language_id')]]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="admin/controller/sale/order.php">
+        <operation>
+            <search>
+                <![CDATA[$this->config->get('config_address')]]>
+            </search>
+            <add position="replace">
+                <![CDATA[$this->config->get('config_address')[$this->config->get('config_language_id')]]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="catalog/controller/extension/payment/cheque.php">
+        <operation>
+            <search>
+                <![CDATA[$this->config->get('config_address')]]>
+            </search>
+            <add position="replace">
+                <![CDATA[$this->config->get('config_address')[$this->config->get('config_language_id')]]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="catalog/controller/information/contact.php">
+        <operation>
+            <search>
+                <![CDATA[$this->config->get('config_address')]]>
+            </search>
+            <add position="replace">
+                <![CDATA[$this->config->get('config_address')[$this->config->get('config_language_id')]]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="catalog/controller/service/service.php">
+        <operation>
+            <search>
+                <![CDATA[$this->config->get('config_address')]]>
+            </search>
+            <add position="replace">
+                <![CDATA[$this->config->get('config_address')[$this->config->get('config_language_id')]]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="catalog/controller/common/footer.php">
+        <operation>
+            <search>
+                <![CDATA[$this->config->get('config_open')]]>
+            </search>
+            <add position="replace">
+                <![CDATA[$this->config->get('config_open')[$this->config->get('config_language_id')]]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="admin/controller/setting/setting.php">
+        <operation>
+            <search>
+                <![CDATA[$this->config->get('config_open')]]>
+            </search>
+            <add position="replace">
+                <![CDATA[$this->config->get('config_open')[$this->config->get('config_language_id')]]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="catalog/controller/information/contact.php">
+        <operation>
+            <search>
+                <![CDATA[$this->config->get('config_open')]]>
+            </search>
+            <add position="replace">
+                <![CDATA[$this->config->get('config_open')[$this->config->get('config_language_id')]]]>
+            </add>
+        </operation>
+    </file>
+
+    <file path="catalog/controller/service/service.php">
+        <operation>
+            <search>
+                <![CDATA[$this->config->get('config_open')]]>
+            </search>
+            <add position="replace">
+                <![CDATA[$this->config->get('config_open')[$this->config->get('config_language_id')]]]>
+            </add>
+        </operation>
+    </file>
+
+
+
+</modification>
